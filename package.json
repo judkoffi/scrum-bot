@@ -1,0 +1,32 @@
+{
+  "name": "scrum-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "dev": "yarn run build:live",
+    "start": "yarn run build && node dist/app.js",
+    "build": "tsc -p .",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.2",
+    "@types/mongoose": "^5.7.21",
+    "@types/node": "^14.0.6",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "mongoose": "^5.9.16",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.3",
+    "typescript-logging": "^0.6.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

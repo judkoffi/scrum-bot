@@ -1,10 +1,10 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import { DataBase } from "../database";
+import { Database } from '../database';
 import { Helper, getRandomColor } from "../helper";
 import { ITicket, LEVEL, STATUS } from "../model/ticket";
 
 function _format(detailled: boolean, elt?: ITicket): any {
-  if (elt === undefined || elt === null)
+  if (!elt)
     return 'No result found';
 
   if (!detailled)
@@ -27,13 +27,9 @@ function _format(detailled: boolean, elt?: ITicket): any {
 }
 
 
-export function messageHandler(message: Message, db: DataBase, client: Client) {
+export function messageHandler(message: Message, db: Database, client: Client) {
   if (message.content.startsWith('!help')) {
     return message.reply(Helper.HELP_MSG);
-  }
-
-  if (message.content.startsWith('!stop')) {
-    message.member?.voice.channel?.leave();
   }
 
   if (message.content.startsWith('!all')) {
@@ -79,7 +75,7 @@ export function messageHandler(message: Message, db: DataBase, client: Client) {
 
   if (message.content.startsWith('!new')) {
     const args = message.content.split(' ');
-    if (args.length < 5) {
+    if (args.length != 5) {
       message.reply(Helper._responseFormat('usage', '```!new {title} {LOW|MEDIUM|HIGH} {TODO|PROGRESS|DONE} {assignedTo}```'));
       return;
     }
@@ -87,13 +83,13 @@ export function messageHandler(message: Message, db: DataBase, client: Client) {
     const level: LEVEL = (LEVEL as any)[args[2]] || LEVEL.MEDIUM;
     const status: STATUS = (STATUS as any)[args[3]] || STATUS.TODO;
 
-    const params = {
+    const elt = {
       'title': args[1],
       'level': level,
       'status': status,
       'assignedTo': args[4]
     }
 
-    db.insertAll([params], (result?: ITicket) => message.reply(result));
+    db.insert(elt, (result?: ITicket) => message.reply(result));
   }
 }

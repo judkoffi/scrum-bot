@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 import { config } from 'dotenv';
-import { DataBase } from './database';
+import { Database } from './database';
 import { messageHandler } from './events/message';
 import { readyHandler } from './events/ready';
 
@@ -8,7 +8,7 @@ import { readyHandler } from './events/ready';
 config();
 const client = new Client();
 
-DataBase
+Database
 	.of(process.env.DB_URI)
 	.then((db) => {
 		console.log('connection db good');

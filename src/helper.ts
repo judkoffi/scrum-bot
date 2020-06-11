@@ -2,7 +2,7 @@ import { ColorResolvable, MessageEmbed } from 'discord.js';
 import { LFService } from 'typescript-logging';
 
 export function getRandomColor(): ColorResolvable {
-  return Math.floor(Math.random() * 16777215).toString(16);
+  return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
 }
 
 export class Helper {
@@ -11,11 +11,14 @@ export class Helper {
     .setThumbnail('https://www.pokepedia.fr/images/9/98/Milobellus-RS.png')
     .setTitle('Commands')
     .addFields(
-      { name: '!all', value: 'Get all tickets' },
+      { name: '!board', value: 'Get all tickets' },
       { name: '!info {id}', value: 'Get info about one ticket' },
       { name: '!status {id} {TODO, INPROGRESS, TOBEVALIDATED, DONE} ', value: 'Change ticket status' },
-      { name: '!new {title} {LOW|MEDIUM|HIGH} {TODO|PROGRESS|DONE}', value: 'Add a new ticket' },
-      { name: '!remove {id}', value: 'Remove a ticket' }
+      { name: '!new {title} {TODO, INPROGRESS, TOBEVALIDATED, DONE}', value: 'Add a new ticket' },
+      { name: '!remove {id}', value: 'Remove a ticket' },
+      { name: '!sprint new {name}', value: 'lorem ipsum' },
+      { name: '!sprint start', value: 'lorem ipsum' },
+      { name: '!sprint stop ', value: 'lorem ipsum' },
     )
     .setTimestamp();
 
@@ -28,10 +31,4 @@ export class Helper {
       .setTitle(title)
       .setDescription(description);
   }
-}
-
-
-
-export class Logger {
-  static LoggerFactory = LFService.createNamedLoggerFactory('scrum-bot');
 }

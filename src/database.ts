@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
-import { Logger } from './helper';
 import { ITicket, STATUS, TicketEntity } from './model/ticket';
-
+import { getLogger } from 'log4js';
 const ID_REGEX = /^[0-9a-fA-F]{24}$/;
-const logger = Logger.LoggerFactory.getLogger('database');
 
-export class DataBase {
+const logger = getLogger();
 
-	static async of(uri?: string): Promise<DataBase> {
+export class Database {
+
+	static async of(uri?: string): Promise<Database> {
 		if (!uri)
 			throw new Error('Invalid string passed into `Database.of()`. Expected a valid URL.');
 
@@ -18,7 +18,7 @@ export class DataBase {
 		});
 
 		(await client).connection;
-		return new DataBase();
+		return new Database();
 	}
 
 	async findAll(callback: CallableFunction) {
@@ -54,14 +54,14 @@ export class DataBase {
 		});
 	}
 
-	async insertAll(elts: any[], callback: CallableFunction) {
-		TicketEntity.insertMany(elts, (error: Error, value: ITicket) => {
+	async insert(elt: any, callback: CallableFunction) {
+		TicketEntity.insertMany(elt, (error: Error, value: ITicket) => {
 			if (error) {
 				logger.error(error.message, error);
 				return;
 			}
 
-			const result = `succeded insert of ${elts.length} value(s)`;
+			const result = `succeded insert of ${elt.length} value(s)`;
 			callback(result);
 		});
 	}

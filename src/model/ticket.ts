@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { Helper } from "../helper";
+import { Helper } from '../helper';
 
 export enum LEVEL {
 	LOW, MEDIUM, HIGH

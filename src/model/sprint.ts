@@ -1,13 +1,12 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { Helper } from '../helper';
 
-
 export interface ISprint extends Document {
   title: string;
-  startDate: Date,
-  endDate: Date,
-  isClosed: boolean,
-  isCurrent: boolean
+  startDate: Date;
+  endDate: Date;
+  isClosed: boolean;
+  isCurrent: boolean;
 }
 
 const sprintSchema: Schema = new Schema(

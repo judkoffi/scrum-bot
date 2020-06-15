@@ -1,10 +1,9 @@
-import { Client, Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Database } from '../database';
 import { getRandomColor, Helper } from '../helper';
 import { ITicket, LEVEL, STATUS } from '../model/ticket';
 
-
-export function messageHandler(message: Message, db: Database, client: Client): void {
+export function messageHandler(message: Message, db: Database): void {
   const args = message.content.slice(Helper.PREFIX.length).split(' ');
   const command = args.shift()?.toLowerCase();
 
@@ -12,45 +11,42 @@ export function messageHandler(message: Message, db: Database, client: Client): 
     case 'help': {
       replySupportedCommand(message);
       break;
-    };
+    }
 
     case 'board': {
       displayBoard(db, message);
       break;
-    };
+    }
 
     case 'new': {
       createTicket(db, message, args);
       break;
-    };
+    }
 
     case 'info': {
       getTicketDetails(db, message, args);
       break;
-    };
+    }
 
     case 'remove': {
       removeTicket(db, message, args);
       break;
-    };
+    }
 
     case 'status': {
       updateTicketStatus(db, message, args);
       break;
-    };
+    }
 
     default:
       break;
   }
 }
 
-
 function _format(detailled: boolean, elt?: ITicket): any {
-  if (!elt)
-    return 'No result found';
+  if (!elt) return 'No result found';
 
-  if (!detailled)
-    return `[#${elt._id}]:\t ${elt.title}\t => ${elt.assignedTo}`;
+  if (!detailled) return `[#${elt._id}]:\t ${elt.title}\t => ${elt.assignedTo}`;
 
   const status = STATUS[elt.status];
   const level = LEVEL[elt.level];
@@ -67,7 +63,6 @@ function _format(detailled: boolean, elt?: ITicket): any {
     .setTimestamp();
   return msg;
 }
-
 
 function displayBoard(db: Database, message: Message): void {
   db.findAll((values: ITicket[]) => {
@@ -99,12 +94,10 @@ function replySupportedCommand(message: Message) {
   return message.reply(msg);
 }
 
-
-
 function createTicket(db: Database, message: Message, args: string[]): void {
-  if (args.length != 5) {
+  if (args.length !== 5) {
     const usage = '!new {title} {LOW|MEDIUM|HIGH} {TODO|PROGRESS|DONE} {assignedTo}';
-    message.reply(buildUsageMsg(usage))
+    message.reply(buildUsageMsg(usage));
     return;
   }
 
@@ -112,19 +105,19 @@ function createTicket(db: Database, message: Message, args: string[]): void {
   const status: STATUS = (STATUS as any)[args[3]] || STATUS.TODO;
 
   const elt = {
-    'title': args[1],
-    'level': level,
-    'status': status,
-    'assignedTo': args[4]
-  }
+    title: args[1],
+    level: level,
+    status: status,
+    assignedTo: args[4],
+  };
 
   db.insert(elt, (result?: ITicket) => message.reply(result));
 }
 
 function getTicketDetails(db: Database, message: Message, args: string[]): void {
-  if (args.length != 2) {
+  if (args.length !== 2) {
     const usage = '!info {id}';
-    message.reply(buildUsageMsg(usage))
+    message.reply(buildUsageMsg(usage));
     return;
   }
   const id = args[1];
@@ -132,9 +125,9 @@ function getTicketDetails(db: Database, message: Message, args: string[]): void 
 }
 
 function removeTicket(db: Database, message: Message, args: string[]): void {
-  if (args.length != 2) {
+  if (args.length !== 2) {
     const usage = '!remove {id}';
-    message.reply(buildUsageMsg(usage))
+    message.reply(buildUsageMsg(usage));
     return;
   }
   const id = args[1];
@@ -142,9 +135,9 @@ function removeTicket(db: Database, message: Message, args: string[]): void {
 }
 
 function updateTicketStatus(db: Database, message: Message, args: string[]): void {
-  if (args.length != 3) {
+  if (args.length !== 3) {
     const usage = '!status {id} {TODO, INPROGRESS, TOBEVALIDATED, DONE}';
-    message.reply(buildUsageMsg(usage))
+    message.reply(buildUsageMsg(usage));
     return;
   }
 
@@ -154,8 +147,5 @@ function updateTicketStatus(db: Database, message: Message, args: string[]): voi
 }
 
 function buildUsageMsg(content: string): MessageEmbed {
-  return new MessageEmbed()
-    .setColor(getRandomColor())
-    .setTitle('Usage')
-    .setDescription(content);
+  return new MessageEmbed().setColor(getRandomColor()).setTitle('Usage').setDescription(content);
 }

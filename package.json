@@ -5,11 +5,12 @@
   "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "eslint . --ext .ts",
+    "fixall": "eslint . --ext .ts --fix",
     "dev": "yarn run build:live",
     "start": "yarn run build && node dist/app.js",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts"
+    "build:live": "yarn run lint && nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +24,17 @@
     "log4js": "^6.3.0",
     "mongoose": "^5.9.16",
     "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
     "typescript": "^3.9.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "@typescript-eslint/eslint-plugin": "^3.2.0",
+    "@typescript-eslint/parser": "^3.2.0",
+    "eslint": "^7.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jsdoc": "^27.0.7",
+    "eslint-plugin-prefer-arrow": "^1.2.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
   }
 }

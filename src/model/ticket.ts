@@ -23,7 +23,7 @@ const ticketSchema: Schema = new Schema(
 		status: { type: STATUS, required: true, unique: false },
 		assignedTo: { type: String, required: true, unique: false },
 	},
-	{ collection: Helper.COLLECTION },
+	{ collection: Helper.TICKET_COLLECTION_NAME},
 );
 
 export const TicketEntity = mongoose.model<ITicket>('Ticket', ticketSchema);

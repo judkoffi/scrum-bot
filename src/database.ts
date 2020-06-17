@@ -1,20 +1,18 @@
-import { getLogger } from 'log4js';
-import { connect, DocumentQuery } from 'mongoose';
-import { ITicket, STATUS, TicketCollection, ITicketDocument } from './model/ticket';
-const ID_REGEX = /^[0-9a-fA-F]{24}$/;
-
-const logger = getLogger();
+import { connect } from 'mongoose';
+import { ITicket, TicketCollection, ITicketDocument } from './model/ticket';
 
 interface IDatabase {
   findAll(): Promise<ITicketDocument[]>;
   findById(id: string): Promise<ITicketDocument | null>;
   insert(elt: ITicket[]): Promise<ITicketDocument[]>;
-  //delete(id: string): Promise<ITicketDocument>;
+  deleteById(id: string): Promise<void>;
 }
 
 export class Database implements IDatabase {
   static async of(uri?: string): Promise<Database> {
-    if (!uri) throw new Error('Invalid string passed into `Database.of()`. Expected a valid URL.');
+    if (!uri) {
+      throw new Error('Invalid string passed into `Database.of()`. Expected a valid URL.');
+    }
 
     const client = connect(uri, {
       useNewUrlParser: true,
@@ -36,5 +34,9 @@ export class Database implements IDatabase {
 
   insert(elts: ITicket[]): Promise<ITicketDocument[]> {
     return TicketCollection.insertMany(elts);
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await TicketCollection.deleteOne({ _id: id });
   }
 }

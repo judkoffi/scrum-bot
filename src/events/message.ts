@@ -29,10 +29,10 @@ export function messageHandler(message: Message, db: Database): void {
       break;
     }
 
-    // case 'remove': {
-    //   removeTicket(db, message, args);
-    //   break;
-    // }
+    case 'remove': {
+      removeTicket(db, message, args);
+      break;
+    }
 
     // case 'status': {
     //   updateTicketStatus(db, message, args);
@@ -46,24 +46,24 @@ export function messageHandler(message: Message, db: Database): void {
   }
 }
 
-function _format(detailled: boolean, elt?: Ticket): any {
-  if (!elt) return 'No result found';
+// function _format(detailled: boolean, elt?: Ticket): any {
+//   if (!elt) return 'No result found';
 
-  if (!detailled) return `[#${elt.id}]:\t ${elt.title}\t => ${elt.assignedTo}`;
+//   if (!detailled) return `[#${elt.id}]:\t ${elt.title}\t => ${elt.assignedTo}`;
 
-  const status = STATUS[elt.status];
-  const msg = new MessageEmbed()
-    .setColor(getRandomColor())
-    .setThumbnail('https://www.pokepedia.fr/images/9/98/Milobellus-RS.png')
-    .setTitle(elt.title)
-    .addFields(
-      { name: 'id', value: elt.id },
-      { name: 'assignedTo', value: elt.assignedTo },
-      { name: 'status', value: status },
-    )
-    .setTimestamp();
-  return msg;
-}
+//   const status = STATUS[elt.status];
+//   const msg = new MessageEmbed()
+//     .setColor(getRandomColor())
+//     .setThumbnail('https://www.pokepedia.fr/images/9/98/Milobellus-RS.png')
+//     .setTitle(elt.title)
+//     .addFields(
+//       { name: 'id', value: elt.id },
+//       { name: 'assignedTo', value: elt.assignedTo },
+//       { name: 'status', value: status },
+//     )
+//     .setTimestamp();
+//   return msg;
+// }
 
 function displayBoard(db: Database, message: Message): void {
   // db.findAll((values: ITicket[]) => {
@@ -94,7 +94,7 @@ function createTicket(db: Database, message: Message, args: string[]): void {
 
   const value = new Ticket('', args[0], STATUS.TODO, args[1]);
   db.insert([value])
-    .then((ticket) => message.reply('fdsd'))
+    .then((ticket) => message.reply(ticket[0].title))
     .catch((error) => console.error(error));
 }
 
@@ -109,20 +109,22 @@ function getTicketDetails(db: Database, message: Message, args: string[]): void 
     .then((elt) => {
       if (!elt) return;
       const ticket = new Ticket(elt._id, elt.title, elt.status, elt.assignedTo);
-      message.reply(_format(true, ticket));
+      message.reply(JSON.stringify(ticket, null, 1));
     })
-    .catch((error) => console.error());
+    .catch((error) => console.error(error));
 }
 
-// function removeTicket(db: Database, message: Message, args: string[]): void {
-//   if (args.length !== 2) {
-//     const usage = '!remove {id}';
-//     message.reply(buildUsageMsg(usage));
-//     return;
-//   }
-//   const id = args[1];
-//   db.deleteById(id, () => message.reply('succeded remove of ticket'));
-// }
+function removeTicket(db: Database, message: Message, args: string[]): void {
+  if (args.length !== 1) {
+    const usage = '!remove {id}';
+    message.reply(buildUsageMsg(usage));
+    return;
+  }
+  const id = args[1];
+  db.deleteById(id)
+    .then(() => message.reply('succeded remove of ticket'))
+    .catch((error) => console.error(error));
+}
 
 // function updateTicketStatus(db: Database, message: Message, args: string[]): void {
 //   if (args.length !== 3) {

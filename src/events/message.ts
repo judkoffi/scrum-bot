@@ -1,18 +1,17 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, Client } from 'discord.js';
 import { Database } from '../database';
 import { getRandomColor, Helper } from '../helper';
 import { ITicket, LEVEL, STATUS } from '../model/ticket';
 
 export function messageHandler(message: Message, db: Database): void {
-  const args = message.content.slice(Helper.PREFIX.length).split(' ');
+  const args = message.content.slice(Helper.PREFIX.length).trim().split(/ +/g);
   const command = args.shift()?.toLowerCase();
 
-  switch (command) {
-    case 'help': {
-      replySupportedCommand(message);
-      break;
-    }
+  if (message.author.bot || !message.content.startsWith(Helper.PREFIX)) {
+    return;
+  }
 
+  switch (command) {
     case 'board': {
       displayBoard(db, message);
       break;
@@ -38,8 +37,10 @@ export function messageHandler(message: Message, db: Database): void {
       break;
     }
 
-    default:
+    default: {
+      replySupportedCommand(message);
       break;
+    }
   }
 }
 
@@ -74,7 +75,7 @@ function displayBoard(db: Database, message: Message): void {
   });
 }
 
-function replySupportedCommand(message: Message) {
+function replySupportedCommand(message: Message): void {
   const msg = new MessageEmbed()
     .setColor(getRandomColor())
     .attachFiles(['assets/agile.png'])
@@ -91,7 +92,7 @@ function replySupportedCommand(message: Message) {
       { name: '!sprint stop ', value: 'lorem ipsum' },
     )
     .setTimestamp();
-  return message.reply(msg);
+  message.reply(msg);
 }
 
 function createTicket(db: Database, message: Message, args: string[]): void {

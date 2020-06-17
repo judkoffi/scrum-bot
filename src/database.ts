@@ -1,5 +1,5 @@
 import { getLogger } from 'log4js';
-import mongoose from 'mongoose';
+import { connect } from 'mongoose';
 import { ITicket, STATUS, TicketEntity } from './model/ticket';
 const ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
@@ -9,7 +9,7 @@ export class Database {
   static async of(uri?: string): Promise<Database> {
     if (!uri) throw new Error('Invalid string passed into `Database.of()`. Expected a valid URL.');
 
-    const client = mongoose.connect(uri, {
+    const client = connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

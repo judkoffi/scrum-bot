@@ -1,26 +1,21 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { Helper } from '../helper';
 
-export enum STATUS {
-  TODO,
-  INPROGRESS,
-  TOBEVALIDATED,
-  DONE,
-}
+export const STATUS: Array<string> = ['TODO', 'INPROGRESS', 'TOBEVALIDATED', ' DONE'];
 
 export interface ITicket {
   title: string;
-  status: STATUS;
+  status: string;
   assignedTo: string;
 }
 
 export class Ticket implements ITicket {
   public id = '';
   public title: string;
-  public status: STATUS;
+  public status: string;
   public assignedTo: string;
 
-  constructor(id: string, title: string, status: STATUS, assignedTo: string) {
+  constructor(id: string, title: string, status: string, assignedTo: string) {
     this.id = id;
     this.title = title;
     this.status = status;
@@ -30,14 +25,19 @@ export class Ticket implements ITicket {
 
 export interface ITicketDocument extends ITicket, Document {
   title: string;
-  status: STATUS;
+  status: string;
   assignedTo: string;
 }
 
 const ticketSchema: Schema = new Schema(
   {
     title: { type: String, required: true, unique: false },
-    status: { type: STATUS, required: true, unique: false },
+    status: {
+      type: String,
+      required: true,
+      unique: false,
+      enum: STATUS,
+    },
     assignedTo: { type: String, required: true, unique: false },
   },
   { collection: Helper.TICKET_COLLECTION_NAME },

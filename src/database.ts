@@ -1,11 +1,12 @@
 import { connect } from 'mongoose';
-import { ITicket, TicketCollection, ITicketDocument } from './model/ticket';
+import { ITicket, ITicketDocument, TicketCollection } from './model/ticket';
 
 interface IDatabase {
   findAll(): Promise<ITicketDocument[]>;
   findById(id: string): Promise<ITicketDocument | null>;
   insert(elt: ITicket[]): Promise<ITicketDocument[]>;
   deleteById(id: string): Promise<void>;
+  updateStatus(id: string, newStatus: string): Promise<ITicketDocument | null>;
 }
 
 export class Database implements IDatabase {
@@ -38,5 +39,10 @@ export class Database implements IDatabase {
 
   async deleteById(id: string): Promise<void> {
     await TicketCollection.deleteOne({ _id: id });
+  }
+
+  async updateStatus(id: string, newStatus: string): Promise<ITicketDocument | null> {
+    await TicketCollection.updateOne({ _id: id }, { status: newStatus });
+    return TicketCollection.findById(id);
   }
 }

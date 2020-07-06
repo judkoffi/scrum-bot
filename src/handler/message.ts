@@ -72,25 +72,34 @@ function displayBoard(db: Database, message: Message): void {
       values.forEach((elt) => msg.addField(elt._id, elt.title));
       message.reply(msg);
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      const errorMsg = `An error occured:  ${error}`;
+      message.reply(errorMsg);
+    });
 }
 
 function createTicket(db: Database, message: Message, args: string[]): void {
   if (args.length !== 2) {
-    const usage = '!new {title} {assignedTo}';
+    const usage = `${Helper.PREFIX}new {title} {assignedTo}`;
     message.reply(buildUsageMsg(usage));
     return;
   }
 
   const value = new Ticket('', args[0], STATUS[0], args[1]);
   db.insert([value])
-    .then((ticket) => message.reply(ticket[0].title))
-    .catch((error) => console.error(error));
+    .then((ticket) => {
+      const msg = `${ticket[0].title} succeded created`;
+      message.reply(msg);
+    })
+    .catch((error) => {
+      const errorMsg = `An error occured:  ${error}`;
+      message.reply(errorMsg);
+    });
 }
 
 function getTicketDetails(db: Database, message: Message, args: string[]): void {
   if (args.length !== 1) {
-    const usage = '!info {id}';
+    const usage = `${Helper.PREFIX}info {id}`;
     message.reply(buildUsageMsg(usage));
     return;
   }
@@ -104,24 +113,30 @@ function getTicketDetails(db: Database, message: Message, args: string[]): void 
       const msg = buildInfoMessage(elt);
       message.reply(msg);
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      const errorMsg = `An error occured:  ${error}`;
+      message.reply(errorMsg);
+    });
 }
 
 function removeTicket(db: Database, message: Message, args: string[]): void {
   if (args.length !== 1) {
-    const usage = '!remove {id}';
+    const usage = `${Helper.PREFIX}remove {id}`;
     message.reply(buildUsageMsg(usage));
     return;
   }
   const id = args[1];
   db.deleteById(id)
     .then(() => message.reply('succeded remove of ticket'))
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      const errorMsg = `An error occured:  ${error}`;
+      message.reply(errorMsg);
+    });
 }
 
 function updateTicketStatus(db: Database, message: Message, args: string[]): void {
   if (args.length !== 2) {
-    const usage = '!status {id} {TODO, INPROGRESS, TOBEVALIDATED, DONE}';
+    const usage = `${Helper.PREFIX}status {id} {TODO, INPROGRESS, TOBEVALIDATED, DONE}`;
     message.reply(buildUsageMsg(usage));
     return;
   }
@@ -138,7 +153,10 @@ function updateTicketStatus(db: Database, message: Message, args: string[]): voi
       if (!elt) return;
       message.reply(buildInfoMessage(elt));
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      const errorMsg = `An error occured:  ${error}`;
+      message.reply(errorMsg);
+    });
 }
 
 function buildUsageMsg(content: string): MessageEmbed {
